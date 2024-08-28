@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	Infrastructure.NewRepositoryDaemon().WatchStorageDirectory()
 	repository := &Infrastructure.FileRepository{}
 	fileService := Application.NewFileService(repository)
 	httpHandlers := HTTPHandlers.NewHttpHandler(fileService)
