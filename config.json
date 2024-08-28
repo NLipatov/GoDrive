@@ -2,7 +2,7 @@
   "StorageDirectory": "storage",
   "Persistence":{
     "EnableAutoDeletion": true,
-    "AutoDeletionCheckIntervalMinutes": 1,
-    "AutoDeletionIntervalMinutes": 1
+    "AutoDeletionCheckIntervalMinutes": 30,
+    "AutoDeletionIntervalMinutes": 180
   } 
 }
