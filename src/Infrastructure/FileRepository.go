@@ -81,16 +81,7 @@ func (s *FileRepository) Delete(id uuid.UUID) (uuid.UUID, error) {
 }
 
 func getStorageDirectoryPath() (string, error) {
-	config, err := GetConfiguration()
-	if err != nil {
-		config = AppSettings{
-			StorageDirectory: "storage",
-			Persistence: PersistenceConfig{
-				EnableAutoDeletion:          true,
-				AutoDeletionIntervalMinutes: 180,
-			},
-		}
-	}
+	config := GetConfiguration()
 
 	storageDirectory := config.StorageDirectory
 
