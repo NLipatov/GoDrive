@@ -13,6 +13,7 @@ func main() {
 	fileService := Application.NewFileService(repository)
 	httpHandlers := HTTPHandlers.NewHttpHandler(fileService)
 
+	http.HandleFunc("/health", httpHandlers.Health)
 	http.HandleFunc("/get", httpHandlers.Get)
 	http.HandleFunc("/save", httpHandlers.Save)
 	http.HandleFunc("/delete", httpHandlers.Delete)

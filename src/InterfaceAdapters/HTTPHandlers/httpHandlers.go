@@ -17,6 +17,20 @@ func NewHttpHandler(fileService *Application.FileService) *HttpHandler {
 	return &HttpHandler{fileService: fileService}
 }
 
+func (h *HttpHandler) Health(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	_, err := w.Write([]byte("OK"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	return
+}
+
 func (h *HttpHandler) Get(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
