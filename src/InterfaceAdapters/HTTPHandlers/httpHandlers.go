@@ -62,18 +62,37 @@ func (h *HttpHandler) Save(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bytes, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Failed to read request body", http.StatusBadRequest)
+	const maxSizeBytes int64 = 300 * 1024 * 1024
+
+	if err := r.ParseMultipartForm(maxSizeBytes); err != nil {
+		http.Error(w, "Failed to parse multipart form", http.StatusBadRequest)
 		return
 	}
 
-	defer r.Body.Close()
+	uploadedFiles := r.MultipartForm.File["payload"]
+	if len(uploadedFiles) != 1 {
+		http.Error(w, "Send 1 file in a form-data with a 'payload' key", http.StatusBadRequest)
+		return
+	}
+
+	formFile := uploadedFiles[0]
+	f, err := formFile.Open()
+	if err != nil {
+		http.Error(w, "Error retrieving formFile from form data", http.StatusBadRequest)
+		return
+	}
+	defer f.Close()
+
+	fileData, err := io.ReadAll(f)
+	if err != nil {
+		http.Error(w, "Failed to read file bytes", http.StatusInternalServerError)
+		return
+	}
 
 	file := Domain.File{
 		Id:        uuid.Nil,
-		Data:      bytes,
-		ExpiresAt: time.Now().UTC().Add(time.Hour * 15),
+		Data:      fileData,
+		ExpiresAt: time.Now().UTC().Add(15 * time.Hour),
 	}
 
 	id, err := h.fileService.Save(file)
